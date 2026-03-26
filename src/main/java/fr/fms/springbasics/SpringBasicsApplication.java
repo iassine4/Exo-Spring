@@ -1,4 +1,4 @@
-package fr.fms.Spring_basics;
+package fr.fms.springbasics;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
