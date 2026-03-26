@@ -1,4 +1,4 @@
-package fr.fms.Spring_basics;
+package fr.fms.springbasics;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
