@@ -23,7 +23,9 @@ public class Article implements Serializable {
     }
     
     public Article(Long id, String brand, String description, Double price) {
-    	this.id = id;
+    	
+    	// id générer par la bdd
+    	
     	this.brand = brand;
     	this.description = description;
     	this.price = price;
