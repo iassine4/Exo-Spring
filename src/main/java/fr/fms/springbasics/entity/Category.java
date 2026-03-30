@@ -15,7 +15,9 @@ public class Category implements Serializable{
 	private Long id;
 	private String name;
 	
-	public Category() {
+	public Category(String name) {
+		 // Constructeur pratique pour créer une catégorie
+        this.name = name;
 		
 	}
 
