@@ -1,11 +1,15 @@
 package fr.fms.springbasics.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Category implements Serializable{
@@ -14,6 +18,13 @@ public class Category implements Serializable{
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	
+	@OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    private List<Article> articles = new ArrayList<>();
+	
+	public Category() {
+        // Constructeur vide obligatoire pour JPA
+    }
 	
 	public Category(String name) {
 		 // Constructeur pratique pour créer une catégorie
@@ -37,9 +48,15 @@ public class Category implements Serializable{
 		this.name = name;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+	public List<Article> getArticles() {
+        // Retourne la liste des articles de la catégorie
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        // Modifie la liste des articles de la catégorie
+        this.articles = articles;
+    }
 
 	@Override
 	public String toString() {
