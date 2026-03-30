@@ -21,45 +21,38 @@ public class SpringBasicsApplication {
     CommandLineRunner start(ArticleRepository articleRepository, CategoryRepository categoryRepository) {
         return args -> {
 
-            // =========================
-            // Initialisation des catégories
-            // =========================
-            if (categoryRepository.count() == 0) {
-                categoryRepository.save(new Category("Shoes"));
-                categoryRepository.save(new Category("Clothes"));
-                categoryRepository.save(new Category("Accessories"));
+            // On évite de réinsérer les mêmes données à chaque démarrage
+            if (categoryRepository.count() == 0 && articleRepository.count() == 0) {
+
+                Category shoes = categoryRepository.save(new Category("Shoes"));
+                Category clothes = categoryRepository.save(new Category("Clothes"));
+
+                Article article1 = new Article("Nike", "Running shoes", 89.99);
+                article1.setCategory(shoes);
+
+                Article article2 = new Article("Adidas", "Sneakers", 79.99);
+                article2.setCategory(shoes);
+
+                Article article3 = new Article("Puma", "Sport hoodie", 59.99);
+                article3.setCategory(clothes);
+
+                articleRepository.save(article1);
+                articleRepository.save(article2);
+                articleRepository.save(article3);
             }
 
-            // =========================
-            // Initialisation des articles
-            // =========================
-            if (articleRepository.count() == 0) {
-                articleRepository.save(new Article("Nike", "Running shoes", 89.99));
-                articleRepository.save(new Article("Adidas", "Sport hoodie", 59.90));
-                articleRepository.save(new Article("Puma", "Cap", 19.99));
+            System.out.println("----- Articles de la catégorie Shoes (méthode 1) -----");
+
+            Category shoesCategory = categoryRepository.findByName("Shoes");
+            if (shoesCategory != null) {
+                shoesCategory.getArticles().forEach(article -> {
+                    System.out.println(article);
+                });
             }
 
-            // =========================
-            // Affichage des catégories
-            // =========================
-            System.out.println("----- All categories -----");
-            categoryRepository.findAll().forEach(category -> {
-                System.out.println(category);
-            });
+            System.out.println("----- Articles de la catégorie Shoes (méthode 2) -----");
 
-            // =========================
-            // Affichage des articles
-            // =========================
-            System.out.println("----- All articles -----");
-            articleRepository.findAll().forEach(article -> {
-                System.out.println(article);
-            });
-
-            // =========================
-            // Recherche des articles Nike
-            // =========================
-            System.out.println("----- Nike articles -----");
-            articleRepository.findByBrand("Nike").forEach(article -> {
+            articleRepository.findByCategoryName("Shoes").forEach(article -> {
                 System.out.println(article);
             });
         };

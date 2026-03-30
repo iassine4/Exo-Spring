@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Article implements Serializable {
@@ -18,6 +20,9 @@ public class Article implements Serializable {
     private String description;
     private Double price;
     
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
     public Article() {
     	// Constructeur vide obligatoire pour JPA
     }
@@ -63,6 +68,11 @@ public class Article implements Serializable {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+	
+	public void setCategory(Category category) {
+	     // Associe l'article à une catégorie
+	     this.category = category;
+	    }
     
 	@Override
 	public String toString() {

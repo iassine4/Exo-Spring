@@ -16,4 +16,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
      * à partir du nom de la méthode.
      */
     List<Article> findByBrand(String brand);
+    List<Article> findByCategoryName(String name);
 }
