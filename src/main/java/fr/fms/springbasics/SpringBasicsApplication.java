@@ -42,7 +42,6 @@ public class SpringBasicsApplication {
             }
 
             System.out.println("----- Articles de la catégorie Shoes (méthode 1) -----");
-
             Category shoesCategory = categoryRepository.findByName("Shoes");
             if (shoesCategory != null) {
                 shoesCategory.getArticles().forEach(article -> {
@@ -51,23 +50,41 @@ public class SpringBasicsApplication {
             }
 
             System.out.println("----- Articles de la catégorie Shoes (méthode 2) -----");
-
             articleRepository.findByCategoryName("Shoes").forEach(article -> {
                 System.out.println(article);
             });
             
+        //-----------		Exercice 1.2		--------
+            
+            System.out.println("----- Find article by id -----");
+            articleRepository.findById(1L).ifPresent(article -> {
+                System.out.println(article);
+            });
+            
             System.out.println("----- Find article by description -----");
-
             Article articleByDescription = articleRepository.findByDescription("Running shoes");
             if (articleByDescription != null) {
                 System.out.println(articleByDescription);
             }
             
             System.out.println("----- All articles -----");
-
             articleRepository.findAll().forEach(article -> {
                 System.out.println(article);
             });
+            
+        //-----------		Exercice 1.3		--------
+            
+            System.out.println("----- Articles with description containing 'shoe' and brand containing 'Ni' -----");
+            articleRepository.findByDescriptionContainingAndBrandContaining("shoe", "Ni")
+                    .forEach(article -> {
+                        System.out.println(article);
+                    });
+            
+            System.out.println("----- Articles with description and brand -----");
+            articleRepository.findByDescriptionAndBrand("Running shoes", "Nike")
+                    .forEach(article -> {
+                        System.out.println(article);
+                    });
         };
     }
 }

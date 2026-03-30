@@ -18,4 +18,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByBrand(String brand);
     List<Article> findByCategoryName(String name);
     Article findByDescription(String description);
+    List<Article> findByDescriptionContainingAndBrandContaining(String description, String brand);
+    List<Article> findByDescriptionAndBrand(String description, String brand);
 }
