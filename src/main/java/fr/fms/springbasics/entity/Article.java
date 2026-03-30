@@ -22,7 +22,7 @@ public class Article implements Serializable {
     	// Constructeur vide obligatoire pour JPA
     }
     
-    public Article(Long id, String brand, String description, Double price) {
+    public Article(String brand, String description, Double price) {
     	
     	// id générer par la bdd
     	
