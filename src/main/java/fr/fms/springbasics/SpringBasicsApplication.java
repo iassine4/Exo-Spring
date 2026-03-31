@@ -21,149 +21,137 @@ public class SpringBasicsApplication {
     @Bean
     CommandLineRunner start(ArticleRepository articleRepository, CategoryRepository categoryRepository) {
         return args -> {
+            initializeData(articleRepository, categoryRepository);
 
-            // On évite de réinsérer les mêmes données à chaque démarrage
-            if (categoryRepository.count() == 0 && articleRepository.count() == 0) {
+            displayAllArticles(articleRepository);
+            displayArticlesByCategory(articleRepository);
+            displayArticleById(articleRepository, 1L);
+            displayArticleByDescription(articleRepository, "Running shoes");
+            displayArticlesByDescriptionAndBrand(articleRepository, "dat", "Ni");
+            displayArticlesByBrandAndMinPrice(articleRepository, "i", 50.0);
+            displaySortedCategoryNames(categoryRepository);
+            updateArticleById(articleRepository, 2L, "Nike", "Updated sneakers", 99.99);
+            deleteArticleById(articleRepository, 3L);
+        };
+    }
 
-                Category shoes = categoryRepository.save(new Category("Shoes"));
-                Category clothes = categoryRepository.save(new Category("Clothes"));
+    private void initializeData(ArticleRepository articleRepository, CategoryRepository categoryRepository) {
+        // Initialise les données seulement si la base est vide
+        if (categoryRepository.count() == 0 && articleRepository.count() == 0) {
+            Category shoes = categoryRepository.save(new Category("Shoes"));
+            Category clothes = categoryRepository.save(new Category("Clothes"));
 
-                Article article1 = new Article("Nike", "Running shoes", 89.99);
-                article1.setCategory(shoes);
+            Article article1 = new Article("Nike", "Running shoes", 89.99);
+            article1.setCategory(shoes);
 
-                Article article2 = new Article("Adidas", "Sneakers", 79.99);
-                article2.setCategory(shoes);
+            Article article2 = new Article("Adidas", "Sneakers", 79.99);
+            article2.setCategory(shoes);
 
-                Article article3 = new Article("Puma", "Sport hoodie", 59.99);
-                article3.setCategory(clothes);
-                
-                articleRepository.save(article1);
-                articleRepository.save(article2);
-                articleRepository.save(article3);
-            }
+            Article article3 = new Article("Puma", "Sport hoodie", 59.99);
+            article3.setCategory(clothes);
 
-            System.out.println("----- Articles de la catégorie Shoes (méthode 1) -----");
-            Category shoesCategory = categoryRepository.findByName("Shoes");
-            if (shoesCategory != null) {
-                shoesCategory.getArticles().forEach(article -> {
+            articleRepository.save(article1);
+            articleRepository.save(article2);
+            articleRepository.save(article3);
+        }
+    }
+
+    private void displayAllArticles(ArticleRepository articleRepository) {
+        // Affiche tous les articles
+        System.out.println("----- All articles -----");
+        articleRepository.findAll().forEach(article -> {
+            System.out.println(article);
+        });
+    }
+
+    private void displayArticlesByCategory(ArticleRepository articleRepository) {
+        // Affiche tous les articles de la catégorie Shoes
+        System.out.println("----- Articles of category Shoes -----");
+        articleRepository.findByCategoryName("Shoes").forEach(article -> {
+            System.out.println(article);
+        });
+    }
+
+    private void displayArticleById(ArticleRepository articleRepository, Long articleId) {
+        // Recherche un article par son identifiant
+        System.out.println("----- Find article by id -----");
+        articleRepository.findById(articleId).ifPresentOrElse(article -> {
+            System.out.println(article);
+        }, () -> {
+            System.out.println("Article with id " + articleId + " not found.");
+        });
+    }
+
+    private void displayArticleByDescription(ArticleRepository articleRepository, String description) {
+        // Recherche un article par description exacte
+        System.out.println("----- Find article by description -----");
+        Article article = articleRepository.findByDescription(description);
+        if (article != null) {
+            System.out.println(article);
+        } else {
+            System.out.println("No article found with description: " + description);
+        }
+    }
+
+    private void displayArticlesByDescriptionAndBrand(ArticleRepository articleRepository, String descriptionKeyword, String brandKeyword) {
+        // Recherche les articles dont la description contient un mot
+        // et dont la marque contient un mot
+        System.out.println("----- Articles by description and brand -----");
+        articleRepository.findByDescriptionContainingAndBrandContaining(descriptionKeyword, brandKeyword)
+                .forEach(article -> {
                     System.out.println(article);
                 });
-            }
+    }
 
-            System.out.println("----- Articles de la catégorie Shoes (méthode 2) -----");
-            articleRepository.findByCategoryName("Shoes").forEach(article -> {
-                System.out.println(article);
-            });
-            
-        //-----------		Exercice 1.2		--------
-            
-            System.out.println("----- Find article by id -----");
-            articleRepository.findById(5L).ifPresent(article -> {
-                System.out.println(article);
-            });
-            
-            System.out.println("----- Find article by description -----");
-            Article articleByDescription = articleRepository.findByDescription("Running shoes");
-            if (articleByDescription != null) {
-                System.out.println(articleByDescription);
-            }
-            
-            System.out.println("----- All articles -----");
-            articleRepository.findAll().forEach(article -> {
-                System.out.println(article);
-            });
-            
-        //-----------		Exercice 1.3		--------
-            
-            System.out.println("----- Articles with description containing 'shoe' and brand containing 'Ni' -----");
-            articleRepository.findByDescriptionContainingAndBrandContaining("shoe", "Ni")
-                    .forEach(article -> {
-                        System.out.println(article);
-            });
-            
-            System.out.println("----- Articles with description and brand -----");
-            articleRepository.findByDescriptionAndBrand("Running shoes", "Nike")
-                    .forEach(article -> {
-                        System.out.println(article);
-            });
-            
-        //------------		Exercice 1.4		---------
-            
-            System.out.println("----- Delete article by id -----");
+    private void displayArticlesByBrandAndMinPrice(ArticleRepository articleRepository, String brandKeyword, Double minPrice) {
+        // Recherche les articles dont la marque contient un mot-clé
+        // et dont le prix est supérieur à une valeur
+        System.out.println("----- Articles by brand keyword and minimum price -----");
+        articleRepository.findByBrandContainingAndPriceGreaterThan(brandKeyword, minPrice)
+                .forEach(article -> {
+                    System.out.println(article);
+                });
+    }
 
-            Long articleIdToDelete = 4L;
+    private void displaySortedCategoryNames(CategoryRepository categoryRepository) {
+        // Affiche les noms des catégories par ordre croissant puis décroissant
+        System.out.println("----- Categories sorted by name ascending -----");
+        categoryRepository.findAll(Sort.by("name").ascending()).forEach(category -> {
+            System.out.println(category.getName());
+        });
 
-            articleRepository.findById(articleIdToDelete).ifPresentOrElse(article -> {
-                System.out.println("Article found before delete: " + article);
+        System.out.println("----- Categories sorted by name descending -----");
+        categoryRepository.findAll(Sort.by("name").descending()).forEach(category -> {
+            System.out.println(category.getName());
+        });
+    }
 
-                articleRepository.deleteById(articleIdToDelete);
+    private void updateArticleById(ArticleRepository articleRepository, Long articleId, String newBrand, String newDescription, Double newPrice) {
+        // Met à jour un article à partir de son id
+        System.out.println("----- Update article by id -----");
+        articleRepository.findById(articleId).ifPresentOrElse(article -> {
+            System.out.println("Before update: " + article);
 
-                System.out.println("Article with id " + articleIdToDelete + " deleted.");
-            }, () -> {
-                System.out.println("Article with id " + articleIdToDelete + " not found.");
-            });
+            article.setBrand(newBrand);
+            article.setDescription(newDescription);
+            article.setPrice(newPrice);
 
-            System.out.println("----- All articles after delete -----");
-            articleRepository.findAll().forEach(article -> {
-                System.out.println(article);
-            });
-            
-          //------------		Exercice 1.5		---------
-            
-            System.out.println("----- Update article by id -----");
+            Article updatedArticle = articleRepository.save(article);
+            System.out.println("After update: " + updatedArticle);
+        }, () -> {
+            System.out.println("Article with id " + articleId + " not found.");
+        });
+    }
 
-            Long articleIdToUpdate = 2L;
-            String newBrand = "Nike";
-            String newDescription = "Updated sneakers";
-            Double newPrice = 99.99;
-
-            articleRepository.findById(articleIdToUpdate).ifPresentOrElse(article -> {
-                System.out.println("Before update: " + article);
-
-                article.setBrand(newBrand);
-                article.setDescription(newDescription);
-                article.setPrice(newPrice);
-
-                Article updatedArticle = articleRepository.save(article);
-
-                System.out.println("After update: " + updatedArticle);
-            }, () -> {
-                System.out.println("Article with id " + articleIdToUpdate + " not found.");
-            });
-            
-          //------------		Exercice 1.6		---------
-            
-            System.out.println("----- Categories sorted by name ascending -----");
-
-            Sort sortByNameAsc = Sort.by("name").ascending();
-
-            categoryRepository.findAll(sortByNameAsc).forEach(category -> {
-                System.out.println(category.getName());
-            });
-
-            System.out.println("----- Categories sorted by name descending -----");
-
-            Sort sortByNameDesc = Sort.by("name").descending();
-
-            categoryRepository.findAll(sortByNameDesc).forEach(category -> {
-                System.out.println(category.getName());
-            });
-            
-          //------------		Exercice 1.7		---------
-            
-            System.out.println("----- Articles with brand containing 'd' and price greater than 50 -----");
-
-            articleRepository.findByBrandContainingAndPriceGreaterThan("d", 50.0)
-                    .forEach(article -> {
-                        System.out.println(article);
-                    });
-            
-            System.out.println("----- Articles with price less than 50 -----");
-
-            articleRepository.findByPriceLessThan(99.0)
-                    .forEach(article -> {
-                        System.out.println(article);
-                    });
-        };
+    private void deleteArticleById(ArticleRepository articleRepository, Long articleId) {
+        // Supprime un article à partir de son id
+        System.out.println("----- Delete article by id -----");
+        articleRepository.findById(articleId).ifPresentOrElse(article -> {
+            System.out.println("Article found before delete: " + article);
+            articleRepository.deleteById(articleId);
+            System.out.println("Article with id " + articleId + " deleted.");
+        }, () -> {
+            System.out.println("Article with id " + articleId + " not found.");
+        });
     }
 }
