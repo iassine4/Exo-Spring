@@ -148,6 +148,22 @@ public class SpringBasicsApplication {
             categoryRepository.findAll(sortByNameDesc).forEach(category -> {
                 System.out.println(category.getName());
             });
+            
+          //------------		Exercice 1.7		---------
+            
+            System.out.println("----- Articles with brand containing 'd' and price greater than 50 -----");
+
+            articleRepository.findByBrandContainingAndPriceGreaterThan("d", 50.0)
+                    .forEach(article -> {
+                        System.out.println(article);
+                    });
+            
+            System.out.println("----- Articles with price less than 50 -----");
+
+            articleRepository.findByPriceLessThan(99.0)
+                    .forEach(article -> {
+                        System.out.println(article);
+                    });
         };
     }
 }
