@@ -106,6 +106,29 @@ public class SpringBasicsApplication {
             articleRepository.findAll().forEach(article -> {
                 System.out.println(article);
             });
+            
+          //------------		Exercice 1.4		---------
+            
+            System.out.println("----- Update article by id -----");
+
+            Long articleIdToUpdate = 2L;
+            String newBrand = "Nike";
+            String newDescription = "Updated sneakers";
+            Double newPrice = 99.99;
+
+            articleRepository.findById(articleIdToUpdate).ifPresentOrElse(article -> {
+                System.out.println("Before update: " + article);
+
+                article.setBrand(newBrand);
+                article.setDescription(newDescription);
+                article.setPrice(newPrice);
+
+                Article updatedArticle = articleRepository.save(article);
+
+                System.out.println("After update: " + updatedArticle);
+            }, () -> {
+                System.out.println("Article with id " + articleIdToUpdate + " not found.");
+            });
         };
     }
 }
