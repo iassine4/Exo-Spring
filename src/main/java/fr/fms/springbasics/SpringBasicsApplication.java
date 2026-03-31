@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Sort;
 
 import fr.fms.springbasics.entity.Article;
 import fr.fms.springbasics.entity.Category;
@@ -107,7 +108,7 @@ public class SpringBasicsApplication {
                 System.out.println(article);
             });
             
-          //------------		Exercice 1.4		---------
+          //------------		Exercice 1.5		---------
             
             System.out.println("----- Update article by id -----");
 
@@ -128,6 +129,24 @@ public class SpringBasicsApplication {
                 System.out.println("After update: " + updatedArticle);
             }, () -> {
                 System.out.println("Article with id " + articleIdToUpdate + " not found.");
+            });
+            
+          //------------		Exercice 1.6		---------
+            
+            System.out.println("----- Categories sorted by name ascending -----");
+
+            Sort sortByNameAsc = Sort.by("name").ascending();
+
+            categoryRepository.findAll(sortByNameAsc).forEach(category -> {
+                System.out.println(category.getName());
+            });
+
+            System.out.println("----- Categories sorted by name descending -----");
+
+            Sort sortByNameDesc = Sort.by("name").descending();
+
+            categoryRepository.findAll(sortByNameDesc).forEach(category -> {
+                System.out.println(category.getName());
             });
         };
     }
