@@ -1,5 +1,7 @@
 package fr.fms.springbasics;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,10 +39,11 @@ public class SpringBasicsApplication {
 
     private void initializeData(ArticleRepository articleRepository, CategoryRepository categoryRepository) {
         // Initialise les données seulement si la base est vide
-        if (categoryRepository.count() == 0 && articleRepository.count() == 0) {
+        if (categoryRepository.count() < 10 && articleRepository.count() < 10) {
             Category shoes = categoryRepository.save(new Category("Shoes"));
             Category clothes = categoryRepository.save(new Category("Clothes"));
-
+            Category accessories = categoryRepository.save(new Category("Accessories"));
+            
             Article article1 = new Article("Nike", "Running shoes", 89.99);
             article1.setCategory(shoes);
 
@@ -49,10 +52,52 @@ public class SpringBasicsApplication {
 
             Article article3 = new Article("Puma", "Sport hoodie", 59.99);
             article3.setCategory(clothes);
+            
+            Article article4 = new Article("Reebok", "Classic leather sneakers", 74.99);
+            article4.setCategory(shoes);
+
+            Article article5 = new Article("New Balance", "Running shoes 530", 109.99);
+            article5.setCategory(shoes);
+
+            Article article6 = new Article("Converse", "Canvas high-top sneakers", 69.90);
+            article6.setCategory(shoes);
+
+            Article article7 = new Article("Under Armour", "Training shorts", 34.99);
+            article7.setCategory(clothes);
+
+            Article article8 = new Article("Levi's", "Slim fit jeans", 79.95);
+            article8.setCategory(clothes);
+
+            Article article9 = new Article("North Face", "Zip fleece jacket", 119.00);
+            article9.setCategory(clothes);
+
+            Article article10 = new Article("Ray-Ban", "Classic sunglasses", 149.99);
+            article10.setCategory(accessories);
+
+            Article article11 = new Article("Eastpak", "Urban backpack", 54.99);
+            article11.setCategory(accessories);
+
+            Article article12 = new Article("Casio", "Digital sport watch", 39.90);
+            article12.setCategory(accessories);
+
+            Article article13 = new Article("Puma", "Baseball cap", 24.99);
+            article13.setCategory(accessories);
 
             articleRepository.save(article1);
             articleRepository.save(article2);
             articleRepository.save(article3);
+            articleRepository.saveAll(List.of(
+            	    article4,
+            	    article5,
+            	    article6,
+            	    article7,
+            	    article8,
+            	    article9,
+            	    article10,
+            	    article11,
+            	    article12,
+            	    article13
+            	));
         }
     }
 
