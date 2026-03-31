@@ -57,7 +57,7 @@ public class SpringBasicsApplication {
         //-----------		Exercice 1.2		--------
             
             System.out.println("----- Find article by id -----");
-            articleRepository.findById(1L).ifPresent(article -> {
+            articleRepository.findById(5L).ifPresent(article -> {
                 System.out.println(article);
             });
             
@@ -78,13 +78,34 @@ public class SpringBasicsApplication {
             articleRepository.findByDescriptionContainingAndBrandContaining("shoe", "Ni")
                     .forEach(article -> {
                         System.out.println(article);
-                    });
+            });
             
             System.out.println("----- Articles with description and brand -----");
             articleRepository.findByDescriptionAndBrand("Running shoes", "Nike")
                     .forEach(article -> {
                         System.out.println(article);
-                    });
+            });
+            
+        //------------		Exercice 1.4		---------
+            
+            System.out.println("----- Delete article by id -----");
+
+            Long articleIdToDelete = 4L;
+
+            articleRepository.findById(articleIdToDelete).ifPresentOrElse(article -> {
+                System.out.println("Article found before delete: " + article);
+
+                articleRepository.deleteById(articleIdToDelete);
+
+                System.out.println("Article with id " + articleIdToDelete + " deleted.");
+            }, () -> {
+                System.out.println("Article with id " + articleIdToDelete + " not found.");
+            });
+
+            System.out.println("----- All articles after delete -----");
+            articleRepository.findAll().forEach(article -> {
+                System.out.println(article);
+            });
         };
     }
 }
